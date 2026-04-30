@@ -1,0 +1,17 @@
+{
+  "name": "image-master",
+  "version": "1.0.0",
+  "description": "Programmatic image generation with GPT Image 2 and Nano Banana Pro (Google Gemini)",
+  "main": "src/index.js",
+  "bin": {
+    "image-master": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.51.0",
+    "dotenv": "^16.0.0",
+    "openai": "^6.35.0"
+  }
+}
