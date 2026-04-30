@@ -1,3 +1,8 @@
+---
+name: image-master
+description: 图片大师 — 为 GPT Image 2（OpenAI）和 Nano Banana Pro（Google Gemini）生成高质量提示词，并可调用本地 Node.js 脚本（~/image-master）直接生成图片文件。支持 11 种提示词模板，覆盖产品海报、信息图、UI样机、水彩地图、动漫插画等场景。Usage: /image-master [描述] 或 /image-master gpt/nano [描述]
+---
+
 # image-master 图片大师
 
 为 **GPT Image 2**（OpenAI）和 **Nano Banana Pro**（Google）生成高质量提示词。
