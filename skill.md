@@ -21,6 +21,81 @@
 
 ---
 
+## 程序化生成图片（Node.js 脚本）
+
+仓库 `~/image-master` 提供了可直接调用的 Node.js 客户端。生成提示词后，可帮用户直接运行脚本生成图片文件。
+
+### 环境配置
+
+```bash
+cd ~/image-master
+npm install
+
+# 配置 API Key（二选一或两者都配）
+export OPENAI_API_KEY=sk-...        # GPT Image 2
+export GOOGLE_AI_API_KEY=AIza...    # Nano Banana Pro
+```
+
+### CLI 调用
+
+```bash
+# GPT Image 2
+node cli.js gpt "prompt内容" --size 1024x1536 --quality high --output ./result.png
+node cli.js gpt "prompt内容" --n 4 --dir ./outputs
+
+# Nano Banana Pro
+node cli.js nano "prompt内容" --aspect 16:9 --image-size 2K --output ./result.png
+node cli.js nano "prompt内容" --ref ./reference.jpg   # 带参考图
+node cli.js nano "prompt内容" --model pro             # 换更高质量模型
+```
+
+| 参数 | 适用 | 说明 |
+|------|------|------|
+| `--output <path>` | 两者 | 指定输出文件路径 |
+| `--dir <dir>` | 两者 | 输出目录（默认当前目录） |
+| `--size` | GPT | `1024x1024` \| `1024x1536` \| `1536x1024` \| `auto` |
+| `--quality` | GPT | `low` \| `medium` \| `high` \| `auto` |
+| `--n <数量>` | GPT | 一次生成多张（1-10） |
+| `--aspect` | Nano | `1:1` \| `16:9` \| `9:16` \| `4:3` \| `3:4` |
+| `--image-size` | Nano | `1K` \| `2K` \| `4K` |
+| `--model` | Nano | `flash`（默认）\| `pro` \| `preview` |
+| `--ref <path>` | Nano | 参考图路径，可多次使用 |
+
+### 程序化调用
+
+```javascript
+const { generateImage } = require('./src');
+
+// GPT Image 2
+const results = await generateImage('gpt', prompt, {
+  size: '1024x1536',
+  quality: 'high',
+  n: 1,
+  outputPath: './output.png',
+});
+
+// Nano Banana Pro（带参考图）
+const results = await generateImage('nano', prompt, {
+  aspectRatio: '16:9',
+  imageSize: '2K',
+  model: 'flash',
+  referenceImages: ['./ref.jpg'],
+  outputPath: './output.png',
+});
+
+console.log(results[0].filePath); // 返回文件路径
+```
+
+### 何时帮用户运行脚本
+
+生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行：
+
+```bash
+cd ~/image-master && node cli.js <model> "<prompt>" [options]
+```
+
+---
+
 ## 操作流程
 
 当 `/image-master` 被调用时，按照以下步骤执行：
