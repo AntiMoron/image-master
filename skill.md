@@ -66,6 +66,26 @@ node cli.js nano "prompt内容" --model pro             # 换更高质量模型
 | `--model` | Nano | `flash`（默认）\| `pro` \| `preview` |
 | `--ref <path>` | Nano | 参考图路径，可多次使用 |
 
+### 图片后处理：移除元数据
+
+生成图片后，可以运行 `remove-metadata.js` 脚本来移除图片中的 AI 生成相关的元数据，使图片更干净。
+
+**用法：**
+
+```bash
+node remove-metadata.js <文件路径1> <文件路径2> ...
+```
+
+**示例：**
+
+```bash
+# 移除单个文件的元数据
+node remove-metadata.js ./result.png
+
+# 移除多个文件的元数据
+node remove-metadata.js ./outputs/*.png
+```
+
 ### 程序化调用
 
 ```javascript
@@ -93,10 +113,14 @@ console.log(results[0].filePath); // 返回文件路径
 
 ### 何时帮用户运行脚本
 
-生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行：
+生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行。执行后，建议接着调用元数据移除脚本。
 
 ```bash
-cd ~/image-master && node cli.js <model> "<prompt>" [options]
+# 1. 生成图片
+cd ~/image-master && node cli.js <model> "<prompt>" --output ./path/to/image.png
+
+# 2. 移除元数据
+node remove-metadata.js ./path/to/image.png
 ```
 
 ---

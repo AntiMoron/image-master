@@ -12,6 +12,7 @@
   "dependencies": {
     "@google/genai": "^1.51.0",
     "dotenv": "^16.0.0",
-    "openai": "^6.35.0"
+    "openai": "^6.35.0",
+    "piexifjs": "^1.0.6"
   }
 }
