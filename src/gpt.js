@@ -29,15 +29,31 @@ async function generateImage(prompt, options = {}) {
     size,
     quality,
     n,
-    response_format: 'b64_json',
   });
 
   const timestamp = Date.now();
   const results = [];
 
   for (let i = 0; i < response.data.length; i++) {
-    const { b64_json } = response.data[i];
-    const buffer = Buffer.from(b64_json, 'base64');
+    const item = response.data[i];
+    let buffer;
+    if (item.b64_json) {
+      buffer = Buffer.from(item.b64_json, 'base64');
+    } else if (item.url) {
+      const https = require('https');
+      const http = require('http');
+      buffer = await new Promise((resolve, reject) => {
+        const client = item.url.startsWith('https') ? https : http;
+        client.get(item.url, (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => resolve(Buffer.concat(chunks)));
+          res.on('error', reject);
+        });
+      });
+    } else {
+      throw new Error('No image data in response');
+    }
 
     let filePath;
     if (outputPath && n === 1) {
