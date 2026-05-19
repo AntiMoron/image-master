@@ -7,6 +7,35 @@ description: 图片大师 — 为 GPT Image 2（OpenAI）和 Nano Banana Pro（G
 
 为 **GPT Image 2**（OpenAI）和 **Nano Banana Pro**（Google）生成高质量提示词。
 
+## 提示词数据库
+
+本 skill 目录下存有 **255 条**真实社区提示词（GPT 126 条 + Nano 129 条），来源于两个 awesome 仓库：
+
+```
+~/.claude/skills/image-master/prompts.json
+```
+
+**结构：**
+```json
+{
+  "total": 255,
+  "prompts": [
+    {
+      "title": "VR 头显爆炸视图海报",
+      "description": "...",
+      "content": "完整提示词文本",
+      "model": "gpt",
+      "featured": true,
+      "language": "EN",
+      "raycast": true,
+      "url": "https://youmind.com/..."
+    }
+  ]
+}
+```
+
+**调用时机：** 收到用户请求后，优先用 Read 工具读取 `prompts.json`，在真实提示词中搜索相近案例，以此为基础生成或改编，而不是凭空套模板。刷新数据：`node ~/image-master/scripts/fetch-prompts.js`
+
 ## 用法
 
 ```
@@ -66,26 +95,6 @@ node cli.js nano "prompt内容" --model pro             # 换更高质量模型
 | `--model` | Nano | `flash`（默认）\| `pro` \| `preview` |
 | `--ref <path>` | Nano | 参考图路径，可多次使用 |
 
-### 图片后处理：移除元数据
-
-生成图片后，可以运行 `remove-metadata.js` 脚本来移除图片中的 AI 生成相关的元数据，使图片更干净。
-
-**用法：**
-
-```bash
-node remove-metadata.js <文件路径1> <文件路径2> ...
-```
-
-**示例：**
-
-```bash
-# 移除单个文件的元数据
-node remove-metadata.js ./result.png
-
-# 移除多个文件的元数据
-node remove-metadata.js ./outputs/*.png
-```
-
 ### 程序化调用
 
 ```javascript
@@ -113,47 +122,11 @@ console.log(results[0].filePath); // 返回文件路径
 
 ### 何时帮用户运行脚本
 
-生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行。执行后，建议接着调用元数据移除脚本。
+生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行：
 
 ```bash
-# 1. 生成图片
-cd ~/image-master && node cli.js <model> "<prompt>" --output ./path/to/image.png
-
-# 2. 移除元数据
-node remove-metadata.js ./path/to/image.png
+cd ~/image-master && node cli.js <model> "<prompt>" [options]
 ```
-
----
-
-## 常用尺寸推荐
-
-以下是针对不同平台和内容的推荐图片尺寸，供用户在生成图片时参考：
-
-### 博客
-
-- **Banner图：** 1920 × 1080px (16:9 比例)
-- **正文内容图：** 1200 × 900px (4:3 比例)
-
-### 微信公众号配图
-
-- **通用比例与尺寸：**
-  - **16:9 (横版)**：1080 × 608px。适用场景：横版说明图、数据图表、风景图。
-  - **3:4 (竖版)**：1080 × 1440px。适用场景：竖版场景图、人物肖像、产品展示。
-  - **1:1 (方形)**：1080 × 1080px。适用场景：方形配图、图标展示、对比图。
-
-- **具体场景推荐尺寸：**
-  1.  **头条封面（首条图文）**
-      -   **官方标准：** 900 × 383px (比例 2.35:1)
-      -   **最小尺寸：** 600 × 255px (保持比例)
-      -   **安全区：** 中间 383 × 383px 区域（重要信息避免边缘）
-      -   **文件要求：** ≤5MB，支持 JPG/PNG/GIF
-  2.  **次条封面（多图文 2-8 条）**
-      -   **官方标准：** 200 × 200px (比例 1:1)
-      -   **推荐优化：** 500 × 500px (高清显示，适配各种场景)
-      -   **使用场景：** 次条文章缩略图、公众号主页展示
-  3.  **分享封面（转发场景）**
-      -   **比例：** 1:1 (推荐 383 × 383px 或 500 × 500px)
-      -   **使用场景：** 用户转发至朋友圈 / 聊天时显示的卡片封面
 
 ---
 
