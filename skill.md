@@ -122,10 +122,14 @@ console.log(results[0].filePath); // 返回文件路径
 
 ### 何时帮用户运行脚本
 
-生成提示词后，如果用户环境中 API Key 已配置，可以主动用 Bash 工具执行：
+生成提示词后，如果用户环境中 API Key 已配置，先读取 `~/.claude/skills/image-master/config.json` 获取 `repoDir`，再执行：
 
 ```bash
-cd ~/image-master && node cli.js <model> "<prompt>" [options]
+# 读取 repoDir
+node -e "console.log(require('/Users/$(whoami)/.claude/skills/image-master/config.json').repoDir)"
+
+# 然后运行
+node <repoDir>/cli.js <model> "<prompt>" [options]
 ```
 
 ---
